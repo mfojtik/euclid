@@ -3,7 +3,6 @@ package template
 import (
 	"bytes"
 	"github.com/mfojtik/euclid/scraper/types"
-	"github.com/sersh88/timeago"
 	"html/template"
 	"sort"
 	"time"
@@ -19,7 +18,7 @@ func GetLastUpdate(display types.Display) string {
 	sort.Slice(v, func(i, j int) bool {
 		return v[j].Before(v[i])
 	})
-	return timeago.New(v[0]).Format()
+	return v[0].Format("02 January 2006 15:04:05")
 }
 
 func RenderTemplate(display types.Display) ([]byte, error) {

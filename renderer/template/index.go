@@ -155,8 +155,8 @@ var HTML = `
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8"></div>
-        <div class="col-md-4 text-md-end"><small>Last Update: {{.LastUpdate}}</small></div>
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-md-end"><small>Last Update: {{.LastUpdate}}</small></div>
     </div>
 </div>
 <script src="js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

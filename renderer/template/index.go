@@ -51,7 +51,7 @@ var HTML = `
                         </svg>
                         Solar Energy Today
                     </th>
-                    <td class="w-25 text-md-end">{{.SolarToday}}</td>
+                    <td style="width:30%" class="text-md-end">{{.SolarToday}}</td>
                 </tr>
                 <tr>
                     <th scope="row">
@@ -60,7 +60,7 @@ var HTML = `
                         </svg>
                         Solar Energy Total
                     </th>
-                    <td class="w-25 text-md-end">{{.SolarTotal}}</td>
+                    <td style="width:30%" class="text-md-end">{{.SolarTotal}}</td>
                 </tr>
                 <tr>
                     <th scope="row">
@@ -69,7 +69,7 @@ var HTML = `
                     </svg>
                         Solar Production Now
                     </th>
-                    <td class="w-25 text-md-end">{{.SolarNow}}</td>
+                    <td style="width:30%" class="text-md-end">{{.SolarNow}}</td>
                 </tr>
                 </tbody>
             </table>

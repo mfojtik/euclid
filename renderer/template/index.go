@@ -114,9 +114,7 @@ var HTML = `
                 <tbody>
                 <tr>
                     <th scope="row">Heating</th>
-                    <td class="w-50 text-md-end bg-danger">
-                        <b>OFFLINE</b>
-                    </td>
+					{{.HeatPumpState}}
                 </tr>
                 <tr>
                     <th scope="row">Solar Panels</th>

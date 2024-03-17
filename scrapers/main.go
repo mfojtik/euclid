@@ -37,20 +37,23 @@ func main() {
 
 	heatPump := acond.New(opts.AcondURL, opts.AcondUser, opts.AcondPassword)
 	heatPumpVal, err := heatPump.Scrape()
+	heatPumpStatus := "on"
 	if err != nil {
-		panic(err)
+		heatPumpStatus = "off"
 	}
 
 	solarScraper := solar.New(opts.SolarURL)
 	solarVal, err := solarScraper.Scrape()
+	solarStatus := "on"
 	if err != nil {
-		panic(err)
+		solarStatus = "off"
 	}
 
 	display, err := types.ReadDisplayFromFile(opts.DisplayFile)
 	if os.IsNotExist(err) {
 		fmt.Println("ERR: creating new file")
 		display = &types.Display{
+			HeatPumpState: heatPumpStatus,
 			Temperatures: []types.Temperature{
 				{Name: "Outside", Values: []types.Value{}, MaxValue: 30.0, MinValue: -5.0},
 				{Name: "Living Room", Values: []types.Value{}, MaxValue: 24.0, MinValue: 17.0},
@@ -64,19 +67,22 @@ func main() {
 		}
 	}
 
-	for i := range display.Temperatures {
-		switch display.Temperatures[i].Name {
-		case "Outside":
-			display.Temperatures[i].Values = types.RecordValue(heatPumpVal.Outdoor, display.Temperatures[i].Values, opts.MaxKeepValues)
-		case "Living Room":
-			display.Temperatures[i].Values = types.RecordValue(heatPumpVal.DownstairsCurrent, display.Temperatures[i].Values, opts.MaxKeepValues)
-		case "Upstairs":
-			display.Temperatures[i].Values = types.RecordValue(heatPumpVal.UpstairsCurrent, display.Temperatures[i].Values, opts.MaxKeepValues)
+	if heatPumpStatus == "on" {
+		display.HeatPumpState = heatPumpStatus
+		for i := range display.Temperatures {
+			switch display.Temperatures[i].Name {
+			case "Outside":
+				display.Temperatures[i].Values = types.RecordValue(heatPumpVal.Outdoor, display.Temperatures[i].Values, opts.MaxKeepValues)
+			case "Living Room":
+				display.Temperatures[i].Values = types.RecordValue(heatPumpVal.DownstairsCurrent, display.Temperatures[i].Values, opts.MaxKeepValues)
+			case "Upstairs":
+				display.Temperatures[i].Values = types.RecordValue(heatPumpVal.UpstairsCurrent, display.Temperatures[i].Values, opts.MaxKeepValues)
+			}
+			display.Temperatures[i].Trend = types.SetTrend(display.Temperatures[i].Values)
 		}
-		display.Temperatures[i].Trend = types.SetTrend(display.Temperatures[i].Values)
 	}
 
-	if solarVal != nil {
+	if solarVal != nil && solarStatus == "on" {
 		display.SolarPower.Status = solarVal.Status
 		display.SolarPower.GenerationNow = solarVal.GenerationNow
 		display.SolarPower.GenerationToday = solarVal.GenerationToday

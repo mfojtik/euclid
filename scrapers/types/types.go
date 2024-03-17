@@ -9,8 +9,9 @@ import (
 )
 
 type Display struct {
-	Temperatures []Temperature `json:"temperatures,omitempty"`
-	SolarPower   Solar         `json:"solar"`
+	HeatPumpState string        `json:"heat_pump_state"`
+	Temperatures  []Temperature `json:"temperatures,omitempty"`
+	SolarPower    Solar         `json:"solar"`
 }
 
 type Value struct {

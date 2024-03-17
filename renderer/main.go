@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
 	"github.com/mfojtik/euclid/renderer/template"
-	"github.com/mfojtik/euclid/scraper/types"
+	"github.com/mfojtik/euclid/scrapers/types"
 	"os"
 )
 

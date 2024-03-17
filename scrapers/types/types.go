@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gookit/goutil/dump"
 	"os"
 	"sort"
 	"time"
@@ -11,11 +10,20 @@ import (
 
 type Display struct {
 	Temperatures []Temperature `json:"temperatures,omitempty"`
+	SolarPower   Solar         `json:"solar"`
 }
 
 type Value struct {
 	Timestamp time.Time `json:"timestamp"`
 	Value     float64   `json:"value"`
+}
+
+type Solar struct {
+	Timestamp       int64   `json:"timestamp"`
+	Status          string  `json:"status"`
+	GenerationNow   float32 `json:"generation_now"`
+	GenerationTotal float32 `json:"generation_total"`
+	GenerationToday float32 `json:"generation_today"`
 }
 
 type Temperature struct {
@@ -92,7 +100,7 @@ func GetLastTemperatureHTMLValue(t *Temperature) string {
 		}
 	}
 	o := fmt.Sprintf(`<th scope="row">%s</th><td style="width:27%%" class="text-md-end%s">%2.1f ℃ %s</td>`, t.Name, trendColor, t.Values[0].Value, sign)
-	dump.P(o)
+	//dump.P(o)
 	return o
 }
 

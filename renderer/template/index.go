@@ -97,15 +97,6 @@ var HTML = `
                         </svg>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row">Upstairs Humidity</th>
-                    <td class="w-25 text-md-end">
-                        41%
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"/>
-                        </svg>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -113,18 +104,12 @@ var HTML = `
             <table class="table border table-striped-columns">
                 <tbody>
                 <tr>
-                    <th scope="row">Heating</th>
+                    <th scope="row">Heat Pump</th>
 					{{.HeatPumpState}}
                 </tr>
                 <tr>
                     <th scope="row">Solar Panels</th>
 					{{.SolarStatus}}
-                </tr>
-                <tr>
-                    <th scope="row">Security</th>
-                    <td class="w-50 text-md-end bg-success">
-                        ONLINE
-                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -7,6 +7,8 @@ import (
 	"github.com/mfojtik/euclid/scrapers/acond"
 	solar "github.com/mfojtik/euclid/scrapers/solar"
 	"github.com/mfojtik/euclid/scrapers/types"
+	"github.com/mfojtik/euclid/scrapers/weather"
+	"log"
 	"os"
 	"time"
 )
@@ -22,6 +24,8 @@ var opts struct {
 
 	SofarPort   string `long:"sofar-port" default:"10.0.0.30:8899"`
 	SofarSerial int64  `long:"sofar-serial"`
+
+	WeatherAPI string `long:"weather-api-key"`
 
 	MaxKeepValues int `long:"max-values" default:"5"`
 }
@@ -51,6 +55,12 @@ func main() {
 		solarStatus = "off"
 	}
 
+	weatherScraper := weather.New(opts.WeatherAPI)
+	weatherData, err := weatherScraper.Scrape()
+	if err != nil {
+		log.Printf("No weather data: %v", err)
+	}
+
 	display, err := types.ReadDisplayFromFile(opts.DisplayFile)
 	if os.IsNotExist(err) {
 		fmt.Println("ERR: creating new file")
@@ -62,10 +72,25 @@ func main() {
 				{Name: "Upstairs", Values: []types.Value{}, MaxValue: 24.0, MinValue: 17.0},
 				{Name: "Cellar", Values: []types.Value{}, MaxValue: 17.0, MinValue: 5.0},
 			},
+			Weather: types.Weather{
+				Temperature:   0,
+				ConditionIcon: "",
+				ConditionText: "Not Available",
+				Precipitation: 0,
+			},
 			SolarPower: types.Solar{
 				Timestamp: time.Now().Unix(),
 				Status:    "off",
 			},
+		}
+	}
+
+	if weatherData != nil {
+		display.Weather = types.Weather{
+			Temperature:   weatherData.Temperature,
+			ConditionIcon: weatherData.ConditionIcon,
+			ConditionText: weatherData.ConditionText,
+			Precipitation: weatherData.Precipitation,
 		}
 	}
 

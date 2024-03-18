@@ -12,6 +12,7 @@ type Display struct {
 	HeatPumpState string        `json:"heat_pump_state"`
 	Temperatures  []Temperature `json:"temperatures,omitempty"`
 	SolarPower    Solar         `json:"solar"`
+	Weather       Weather       `json:"weather"`
 }
 
 type Value struct {
@@ -26,6 +27,13 @@ type Solar struct {
 	ConsumptionToday float32 `json:"consumption_today"`
 	GenerationTotal  float32 `json:"generation_total"`
 	GenerationToday  float32 `json:"generation_today"`
+}
+
+type Weather struct {
+	Temperature   float64 `json:"temperature"`
+	ConditionIcon string  `json:"conditionIcon"`
+	ConditionText string  `json:"conditionText"`
+	Precipitation int     `json:"precipitation"`
 }
 
 type Temperature struct {
@@ -101,7 +109,11 @@ func GetLastTemperatureHTMLValue(t *Temperature) string {
 			trendColor = " bg-info"
 		}
 	}
-	o := fmt.Sprintf(`<th scope="row">%s</th><td style="width:27%%" class="text-md-end%s">%2.1f ℃ %s</td>`, t.Name, trendColor, t.Values[0].Value, sign)
+	val := float64(0)
+	if len(t.Values) != 0 {
+		val = t.Values[0].Value
+	}
+	o := fmt.Sprintf(`<th scope="row">%s</th><td style="width:27%%" class="text-md-end%s">%2.1f ℃ %s</td>`, t.Name, trendColor, val, sign)
 	//dump.P(o)
 	return o
 }

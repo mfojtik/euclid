@@ -19,8 +19,10 @@ func GetLastUpdate(display types.Display) string {
 	sort.Slice(v, func(i, j int) bool {
 		return v[j].Before(v[i])
 	})
-	solarTime := time.Unix(display.SolarPower.Timestamp, 0).Format("02 January 2006 15:04")
-	return fmt.Sprintf("s:%s | t:%s", solarTime, v[0].Format("02 January 2006 15:04"))
+	if len(v) == 0 {
+		return "n/a"
+	}
+	return fmt.Sprintf("%s", v[0].Format("02 January 2006 15:04"))
 }
 
 func GetStatus(status string) template.HTML {
@@ -40,6 +42,8 @@ func RenderTemplate(display types.Display) ([]byte, error) {
 
 		SolarStatus   template.HTML
 		HeatPumpState template.HTML
+
+		Weather template.HTML
 
 		SolarToday  string
 		SolarTotal  string
@@ -62,6 +66,8 @@ func RenderTemplate(display types.Display) ([]byte, error) {
 		EnergyToday:   fmt.Sprintf("%.2f kWh", display.SolarPower.ConsumptionToday),
 		SolarTotal:    fmt.Sprintf("%.2f kWh", display.SolarPower.GenerationTotal),
 		SolarToday:    fmt.Sprintf("%.2f kWh", display.SolarPower.GenerationToday),
+		Weather: template.HTML(fmt.Sprintf("<img src=\"%s\" style=\"width:24px\"/> %s, %.1f °C, %d%% chance of rain",
+			display.Weather.ConditionIcon, display.Weather.ConditionText, display.Weather.Temperature, display.Weather.Precipitation)),
 	}
 	w := bytes.NewBuffer([]byte{})
 	err = t.Execute(w, val)

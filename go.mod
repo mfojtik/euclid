@@ -3,6 +3,7 @@ module github.com/mfojtik/euclid
 go 1.20
 
 require (
+	github.com/go-resty/resty/v2 v2.12.0
 	github.com/gookit/goutil v0.6.15
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/kubaceg/sofar_g3_lsw3_logger_reader v0.0.0-20231211192211-e6707235de14

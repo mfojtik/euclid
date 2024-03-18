@@ -20,7 +20,7 @@ func GetLastUpdate(display types.Display) string {
 		return v[j].Before(v[i])
 	})
 	solarTime := time.Unix(display.SolarPower.Timestamp, 0).Format("02 January 2006 15:04")
-	return fmt.Sprintf("s: %s | t:%s", solarTime, v[0].Format("02 January 2006 15:04"))
+	return fmt.Sprintf("s:%s | t:%s", solarTime, v[0].Format("02 January 2006 15:04"))
 }
 
 func GetStatus(status string) template.HTML {

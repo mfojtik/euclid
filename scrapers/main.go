@@ -82,12 +82,16 @@ func main() {
 		}
 	}
 
-	if solarVal != nil && solarStatus == "on" {
+	if solarStatus == "on" {
 		display.SolarPower.Status = solarVal.Status
 		display.SolarPower.GenerationNow = solarVal.GenerationNow
 		display.SolarPower.GenerationToday = solarVal.GenerationToday
 		display.SolarPower.GenerationTotal = solarVal.GenerationTotal
 		display.SolarPower.Timestamp = solarVal.Timestamp
+	} else {
+		display.SolarPower.Status = "off"
+		display.SolarPower.GenerationNow = 0
+		display.SolarPower.Timestamp = time.Now().Unix()
 	}
 
 	if err := types.WriteDisplayToFile(opts.DisplayFile, *display); err != nil {

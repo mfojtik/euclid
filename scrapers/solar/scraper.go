@@ -36,7 +36,7 @@ func (s *Scraper) Scrape() (*types.Solar, error) {
 		Status:           "on",
 		GenerationNow:    (float32(data["ActivePower_Output_Total"].(int16)) * 10) / 1000,
 		ConsumptionToday: (float32(data["Load_Consumption_Today"].(uint32)) * 10) / 1000,
-		GenerationTotal:  (float32(data["PV_Generation_Total"].(uint32)) * 10) / 1000, // 10*W to kWh
+		GenerationTotal:  (float32(data["PV_Generation_Total"].(uint32)) * 100) / 1000, // 10*W to kWh
 		GenerationToday:  (float32(data["PV_Generation_Today"].(uint32)) * 10) / 1000,
 	}, nil
 }

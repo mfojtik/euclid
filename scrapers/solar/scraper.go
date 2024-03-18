@@ -1,45 +1,42 @@
 package solar
 
 import (
-	"encoding/json"
+	"github.com/kubaceg/sofar_g3_lsw3_logger_reader/adapters/comms/tcpip"
+	"github.com/kubaceg/sofar_g3_lsw3_logger_reader/adapters/devices/sofar"
 	"github.com/mfojtik/euclid/scrapers/types"
-	"io"
-	"net/http"
-	"net/url"
+	"log"
+	"time"
 )
 
 type Scraper struct {
-	BaseURL *url.URL
+	device *sofar.Logger
 }
 
-func New(baseUrl string) *Scraper {
-	parsedUrl, _ := url.Parse(baseUrl)
-	return &Scraper{
-		BaseURL: parsedUrl,
-	}
-}
-
-func (s *Scraper) httpGet(u *url.URL) ([]byte, error) {
-	client := http.DefaultClient
-	req, err := http.NewRequest("GET", u.String()+"/inverter.json", nil)
-	if err != nil {
-		return nil, err
-	}
-	response, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return io.ReadAll(response.Body)
+func New(baseUrl string, serial int64) *Scraper {
+	return &Scraper{device: sofar.NewSofarLogger(uint(serial), tcpip.New(baseUrl), []string{
+		"PV_Generation_Today",
+		"PV_Generation_Total",
+		"Temperature_HeatSink1",
+		"ActivePower_Output_Total",
+		"Load_Consumption_Today",
+	}, []string{})}
 }
 
 func (s *Scraper) Scrape() (*types.Solar, error) {
-	jsonBytes, err := s.httpGet(s.BaseURL)
+	data, err := s.device.Query()
 	if err != nil {
-		return nil, err
+		log.Printf("ERR: %v", err)
+		return &types.Solar{
+			Timestamp: time.Now().Unix(),
+			Status:    "off",
+		}, nil
 	}
-	data := types.Solar{}
-	if err := json.Unmarshal(jsonBytes, &data); err != nil {
-		return nil, err
-	}
-	return &data, nil
+	return &types.Solar{
+		Timestamp:        time.Now().Unix(),
+		Status:           "on",
+		GenerationNow:    (float32(data["ActivePower_Output_Total"].(int16)) * 10) / 1000,
+		ConsumptionToday: (float32(data["Load_Consumption_Today"].(uint32)) * 10) / 1000,
+		GenerationTotal:  (float32(data["PV_Generation_Total"].(uint32)) * 10) / 1000, // 10*W to kWh
+		GenerationToday:  (float32(data["PV_Generation_Today"].(uint32)) * 10) / 1000,
+	}, nil
 }

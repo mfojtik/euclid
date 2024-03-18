@@ -20,11 +20,12 @@ type Value struct {
 }
 
 type Solar struct {
-	Timestamp       int64   `json:"timestamp"`
-	Status          string  `json:"status"`
-	GenerationNow   float32 `json:"generation_now"`
-	GenerationTotal float32 `json:"generation_total"`
-	GenerationToday float32 `json:"generation_today"`
+	Timestamp        int64   `json:"timestamp"`
+	Status           string  `json:"status"`
+	GenerationNow    float32 `json:"generation_now"`
+	ConsumptionToday float32 `json:"consumption_today"`
+	GenerationTotal  float32 `json:"generation_total"`
+	GenerationToday  float32 `json:"generation_today"`
 }
 
 type Temperature struct {

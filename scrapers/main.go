@@ -5,7 +5,7 @@ import (
 	"github.com/gookit/goutil/dump"
 	"github.com/jessevdk/go-flags"
 	"github.com/mfojtik/euclid/scrapers/acond"
-	"github.com/mfojtik/euclid/scrapers/solar"
+	solar "github.com/mfojtik/euclid/scrapers/solar"
 	"github.com/mfojtik/euclid/scrapers/types"
 	"os"
 	"time"
@@ -20,7 +20,8 @@ var opts struct {
 	AcondUser     string `long:"acond-user" default:"acond"`
 	AcondPassword string `long:"acond-password" default:"acond"`
 
-	SolarURL string `long:"solar-url" default:"http://hampta:8000"`
+	SofarPort   string `long:"sofar-port" default:"10.0.0.30:8899"`
+	SofarSerial int64  `long:"sofar-serial"`
 
 	MaxKeepValues int `long:"max-values" default:"5"`
 }
@@ -34,6 +35,7 @@ func main() {
 		fmt.Println("ERROR: No display file specified")
 		os.Exit(1)
 	}
+	//dump.P(opts)
 
 	heatPump := acond.New(opts.AcondURL, opts.AcondUser, opts.AcondPassword)
 	heatPumpVal, err := heatPump.Scrape()
@@ -42,7 +44,7 @@ func main() {
 		heatPumpStatus = "off"
 	}
 
-	solarScraper := solar.New(opts.SolarURL)
+	solarScraper := solar.New(opts.SofarPort, opts.SofarSerial)
 	solarVal, err := solarScraper.Scrape()
 	solarStatus := "on"
 	if err != nil {
@@ -83,19 +85,22 @@ func main() {
 	}
 
 	if solarStatus == "on" {
+		dump.P(solarVal)
 		display.SolarPower.Status = solarVal.Status
 		display.SolarPower.GenerationNow = solarVal.GenerationNow
+		display.SolarPower.ConsumptionToday = solarVal.ConsumptionToday
 		display.SolarPower.GenerationToday = solarVal.GenerationToday
 		display.SolarPower.GenerationTotal = solarVal.GenerationTotal
 		display.SolarPower.Timestamp = solarVal.Timestamp
 	} else {
 		display.SolarPower.Status = "off"
 		display.SolarPower.GenerationNow = 0
+		display.SolarPower.ConsumptionToday = 0
 		display.SolarPower.Timestamp = time.Now().Unix()
 	}
 
 	if err := types.WriteDisplayToFile(opts.DisplayFile, *display); err != nil {
 		panic(err)
 	}
-	dump.P(display)
+	//dump.P(display)
 }

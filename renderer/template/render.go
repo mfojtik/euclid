@@ -41,9 +41,10 @@ func RenderTemplate(display types.Display) ([]byte, error) {
 		SolarStatus   template.HTML
 		HeatPumpState template.HTML
 
-		SolarToday string
-		SolarTotal string
-		SolarNow   string
+		SolarToday  string
+		SolarTotal  string
+		SolarNow    string
+		EnergyToday string
 	}
 	t, err := template.New("test").Parse(HTML)
 	if err != nil {
@@ -58,6 +59,7 @@ func RenderTemplate(display types.Display) ([]byte, error) {
 		SolarStatus:   GetStatus(display.SolarPower.Status),
 		HeatPumpState: GetStatus(display.HeatPumpState),
 		SolarNow:      fmt.Sprintf("%.2f kW", display.SolarPower.GenerationNow),
+		EnergyToday:   fmt.Sprintf("%.2f kWh", display.SolarPower.ConsumptionToday),
 		SolarTotal:    fmt.Sprintf("%.2f kWh", display.SolarPower.GenerationTotal),
 		SolarToday:    fmt.Sprintf("%.2f kWh", display.SolarPower.GenerationToday),
 	}
